@@ -4,6 +4,10 @@
 </nav>
 
 <p>Item Details</p>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+	<AlertMessage Type="danger" Message="@_errorMessage" />
+}
 
 <nav class="navbar navbar-light bg-light justify-content-between">
 	<button class="btn btn-primary" type="button" @onclick="AddItemHandler">
@@ -59,6 +63,7 @@
 	private bool _addItem { get; set; }
 	private string _itemName { get; set; }
 	private int _quantity { get; set; }
+	private string _errorMessage = "";
 
 	protected override void OnInitialized()
 	{
@@ -73,10 +78,17 @@
 		}
 		else
 		{
-			_items = ItemService.Create(_itemName, _quantity);
-			_itemName = "";
-			_quantity = 0;
-			_addItem = false;
+			try
+			{
+				_items = ItemService.Create(_itemName, _quantity);
+				_itemName = "";
+				_quantity = 0;
+				_addItem = false;
+			} catch(Exception e)
+			{
+				_errorMessage = e.Message;
+				Console.WriteLine(e);
+			}
 		}
 	}
 	private void AddItemHandler()
@@ -85,9 +97,16 @@
 	}
 	private void AddQuantity(Guid userId)
 	{
-		_items = ItemService.AddQuantity(userId, _quantity);
-		_addInv = InvAddService.Create(userId, _globalState.CurrentUser.Id, _quantity);
-		_quantity = 0;
+		if (_quantity == 0)
+		{
+			_errorMessage = "Value cannot be 0";
+		}
+		else
+		{
+			_items = ItemService.AddQuantity(userId, _quantity);
+			_addInv = InvAddService.Create(userId, _globalState.CurrentUser.Id, _quantity);
+			_quantity = 0;
+		}
 	}
 }
 @code {

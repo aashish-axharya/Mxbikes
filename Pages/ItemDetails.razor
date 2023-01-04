@@ -70,7 +70,7 @@
 	{
 		var day = DateTime.Now.DayOfWeek;
 		TimeSpan time = DateTime.Now.TimeOfDay;
-		if (((day == DayOfWeek.Saturday) || (day == DayOfWeek.Sunday)) && (time > new TimeSpan(09, 00, 00) && time < new TimeSpan(16, 00, 00)))
+		if (((day != DayOfWeek.Saturday) || (day != DayOfWeek.Sunday)) && (time > new TimeSpan(09, 00, 00) && time < new TimeSpan(16, 00, 00)))
 		{
 			_takenLog = InvLogService.Create(userId, _globalState.CurrentUser.Id, _quantity);
 			_quantity = 0;

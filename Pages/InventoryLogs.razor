@@ -2,6 +2,10 @@
 <nav class="navbar navbar-light bg-light justify-content-between">
     <h1 class="navbar-brand mb-0 h1">Inventory Log</h1>
 </nav>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <AlertMessage Type="danger" Message="@_errorMessage" />
+}
 <lable>Search:</lable>
 <input @bind="search" class="form-control col-1" />
 <table class="table">
@@ -19,27 +23,30 @@
             IEnumerable<Items> _itemsList = _items;
             IEnumerable<User> _usersList = _users;
             IEnumerable<InvLog> _logs = _invlogs;
+            string status;
             @foreach (var items in _logs)
             {
                 string _itemName = _itemsList.FirstOrDefault(x => x.ItemId == items.ID)?.ItemName;
                 string _userName = _usersList.FirstOrDefault(x => x.Id == items.Staffid)?.Username;
+                if (items.ApprovedStatus == true)
+                {
+                    status = "Approved";
+                }
+                else
+                {
+                    status = "Pending";    
+                }
                 <tr>
                     <td>@_itemName</td>
                     <td>@items.Quantity</td>
                     <td>@_userName</td>
+                    <td>@status</td>
                     <td>
                         <input type="checkbox" value="@items.ApprovedStatus" disabled="@items.ApprovedStatus" class="btn btn-outline-secondary"
-                           @onclick="()=>OpenEditItemDialog(items.ID,items.Staffid,items.ItemId , items.Quantity)">
+                           @onclick="()=>ItemDialog(items.ID,items.Staffid,items.ItemId , items.Quantity)">
                     </td>
-                    <td>
-                        <button class="btn btn-outline-danger" type="button" @onclick="()=>DeleteInventoryLog(items.ID )">
-                            <span class="oi oi-delete" /> Delete
-                        </button>
-                    </td>
-
                 </tr>
             }
-
         }
     </tbody>
 </table>
@@ -50,6 +57,7 @@
     private List<Items> _items { get; set; }
     private List<InvLog> _invlogs { get; set; }
     private List<User> _users { get; set; }
+    private string _errorMessage = "";
 
     protected override void OnInitialized()
     {
@@ -58,21 +66,37 @@
         _users = UsersService.GetAll();
     }
 
-    private void OpenEditItemDialog(Guid id, Guid staffID, Guid itemId, int quantity)
+    private void ItemDialog(Guid id, Guid staffID, Guid itemId, int quantity)
     {
-        bool status = true;
-        _invlogs = InvLogService.Update(id, staffID, _globalState.CurrentUser.Id, itemId, status, quantity);
-        Console.WriteLine(quantity);
-        _items = ItemService.RemoveQuantity(id, quantity);
-        status = false;
+        try
+        {
+            bool status = true;
+            _invlogs = InvLogService.Update(id, staffID, _globalState.CurrentUser.Id, itemId, status, quantity);
+            Console.WriteLine(quantity);
+            _items = ItemService.RemoveQuantity(id, quantity);
+            status = false;
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
     }
 
     private void DeleteInventoryLog(Guid id)
     {
-        _invlogs = InvLogService.Delete(id);
+        try
+        {
+            _invlogs = InvLogService.Delete(id);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
     }
 
-    	private string _search;
+    private string _search;
 	public string search
 	{
 		get { return _search; }

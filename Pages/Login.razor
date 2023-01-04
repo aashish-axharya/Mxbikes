@@ -24,6 +24,10 @@
               <input type="password" id="form2Example2" class="form-control" @bind="_password" />
             </div>
             <!-- Submit button -->
+                        @if (!string.IsNullOrEmpty(_errorMessage))
+                        {
+                            <AlertMessage Type="danger" Message="@_errorMessage" />
+                        }
             <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
           </form>
         </div>
