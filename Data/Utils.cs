@@ -15,16 +15,14 @@ namespace Mxbikes.Data
     public static class Utils
     {
         private const char _segmentDelimiter = ':';
-
         public static string HashSecret(string input)
         {
-            var saltSize = 16;
+            var saltSize = 8;
             var iterations = 100_000;
-            var keySize = 32;
+            var keySize = 16;
             HashAlgorithmName algorithm = HashAlgorithmName.SHA256;
             byte[] salt = RandomNumberGenerator.GetBytes(saltSize);
             byte[] hash = Rfc2898DeriveBytes.Pbkdf2(input, salt, iterations, algorithm, keySize);
-
             return string.Join(
                 _segmentDelimiter,
                 Convert.ToHexString(hash),
@@ -48,7 +46,6 @@ namespace Mxbikes.Data
                 algorithm,
                 hash.Length
             );
-
             return CryptographicOperations.FixedTimeEquals(inputHash, hash);
         }
 
@@ -64,9 +61,17 @@ namespace Mxbikes.Data
         {
             return Path.Combine(GetAppDirectoryPath(), "users.json");
         }
-        public static string GetItemFilePath(Guid userId)
+        public static string GetItemFilePath()
         {
-            return Path.Combine(GetAppDirectoryPath(), userId.ToString() + "_items.json");
+            return Path.Combine(GetAppDirectoryPath(),"items.json");
         }
-    }
+		public static string GetItemsAddFilePath()
+		{
+			return Path.Combine(GetAppDirectoryPath(), "itemsAdded.json");
+		}
+		public static string GetInvLogFilePath()
+		{
+			return Path.Combine(GetAppDirectoryPath(), "inventoryLog.json");
+		}
+	}
 }

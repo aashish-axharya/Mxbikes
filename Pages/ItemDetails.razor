@@ -1,0 +1,85 @@
+﻿@page "/items"
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <h1 class="navbar-brand mb-0 h1">Items</h1>
+</nav>
+
+<p>Item Details</p>
+@if (_invalidDate)
+{
+	<div class="alert alert-danger" role="alert">
+		Invalid Working Hours! Try Again A Different Time
+	</div>
+}
+@if (_showMessage)
+{
+	<div class="alert alert-success" role="alert">
+		Pending Approval
+	</div>
+}
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Items</th>
+			<th>Quantity</th>
+			<th>Taken Date</th>
+            <th>Take out?</th>
+		</tr>
+	</thead>
+    <tbody>
+        @{
+        IEnumerable<InvLog> _takenList = _takenLog;
+        @foreach (var items in _items)
+            {
+                DateTime takenDate = _takenList.Where(x => x.ID == items.ItemId)
+                                            .Select(x => x.DateTaken)
+                                            .FirstOrDefault();
+                <tr>
+					<td>@items.ItemId</td>
+                    <td>@items.ItemName</td>
+                    <td>@items.Quantity</td>
+                    <td>@takenDate.ToString("MMM dd, yyyy h:mm tt")</td>
+					<td>
+						<input type="number" @bind="_quantity" placeholder="Quantity" />
+						<button class="btn btn-primary" type="button" @onclick="()=>TakeOut(items.ItemId)">
+							<span class="oi oi-minus" /> Take Out
+						</button>
+					</td>
+                </tr>
+        } }
+    </tbody>
+</table>
+
+@code {
+	[CascadingParameter]
+	private GlobalState _globalState{ get; set; }
+	private List<Items> _items { get; set; }
+	private List<InvLog> _takenLog { get; set; }
+	private int _quantity{ get; set; }
+	private bool _showMessage{ get; set; }
+	private bool _invalidDate{ get; set; }
+
+	protected override void OnInitialized()
+	{
+		_items = ItemService.GetAll();
+		_takenLog = InvLogService.GetAll();
+	}
+
+	private void TakeOut(Guid userId)
+	{
+		var day = DateTime.Now.DayOfWeek;
+		TimeSpan time = DateTime.Now.TimeOfDay;
+		if (((day == DayOfWeek.Saturday) || (day == DayOfWeek.Sunday)) && (time > new TimeSpan(09, 00, 00) && time < new TimeSpan(16, 00, 00)))
+		{
+			_takenLog = InvLogService.Create(userId, _globalState.CurrentUser.Id, _quantity);
+			_quantity = 0;
+			_showMessage = true;
+		}
+		else
+		{
+			_invalidDate = true;
+			_quantity = 0;
+		}
+	}
+}

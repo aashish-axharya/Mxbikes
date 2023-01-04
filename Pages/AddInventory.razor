@@ -1,0 +1,95 @@
+﻿@page "/inv-add"
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <h1 class="navbar-brand mb-0 h1">Add Inventory</h1>
+</nav>
+
+<p>Item Details</p>
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+	<button class="btn btn-primary" type="button" @onclick="AddItemHandler">
+		<span class="oi oi-plus" /> Add Items
+	</button>
+</nav>
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Items</th>
+			<th>Quantity</th>
+			<th>Add?</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var items in _items)
+		{
+			<tr>
+				<td>@items.ItemId</td>
+				<td>@items.ItemName</td>
+				<td>@items.Quantity</td>
+				<td>
+					<input type="number" @bind="_quantity" placeholder="Quantity" />
+					<button class="btn btn-primary" type="button" @onclick="()=>AddQuantity(items.ItemId)">
+						<span class="oi oi-plus" /> Add Quantity
+					</button>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+@if (_addItem)
+{
+	<ModalDialog Title="Add Item" OkLabel="Add" OnClose="AddItem">
+		<div>
+			<label>Item Name</label>
+			<input type="text" @bind="_itemName" placeholder="Item Name" />
+		</div>
+		<div>
+			<label>Quantity</label>
+			<input type="text" @bind="_quantity" placeholder="Quantity" />
+		</div>
+	</ModalDialog>
+
+}
+
+@code {
+	[CascadingParameter]
+	private GlobalState _globalState { get; set; }
+	private List<Items> _items;
+	private List<InvAdd> _addInv;
+	private bool _addItem { get; set; }
+	private string _itemName { get; set; }
+	private int _quantity { get; set; }
+
+	protected override void OnInitialized()
+	{
+		_items = ItemService.GetAll();
+	}
+
+	private void AddItem(bool value)
+	{
+		if (value)
+		{
+			_addItem = false;
+		}
+		else
+		{
+			_items = ItemService.Create(_itemName, _quantity);
+			_itemName = "";
+			_quantity = 0;
+			_addItem = false;
+		}
+	}
+	private void AddItemHandler()
+	{
+		_addItem = true;
+	}
+	private void AddQuantity(Guid userId)
+	{
+		_items = ItemService.AddQuantity(userId, _quantity);
+		_addInv = InvAddService.Create(userId, _globalState.CurrentUser.Id, _quantity);
+		_quantity = 0;
+	}
+}
+@code {
+
+}

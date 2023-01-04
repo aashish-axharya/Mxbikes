@@ -1,0 +1,78 @@
+﻿@page "/dashboard"
+@using System.Globalization
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <h4>Quantity Taken Out For This Month</h4>
+            <RadzenChart>
+                @{
+                    IEnumerable<Items> _item = _items;
+                    IEnumerable<InvLog> _log = _logs;
+                    var inv = _logs.Where(x => x.ApprovedStatus == true);
+                    //var thisMonth = inv.Where(x => x.LastTaken.ToString("MMM") == DateTime.Now.ToString("MMM"));
+                    List<DataItem> data = new List<DataItem>();
+                    foreach (var item in inv)
+                    {
+                        data.Add(new DataItem
+                    {
+                        ItemName = _item.FirstOrDefault(x => x.ItemId == item.ID)?.ItemName,
+                        Quantity = item.Quantity
+                    });
+                    }
+                }
+                <RadzenColumnSeries Data="data" CategoryProperty="ItemName" Title="Item" ValueProperty="Quantity">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenColumnSeries>
+                <RadzenColumnOptions Radius="10" />
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Quantity" />
+                </RadzenValueAxis>
+
+            </RadzenChart>
+
+        </div>
+    </div>
+</div>
+@code {
+    private List<Items> _items { get; set; }
+    private List<InvLog> _logs { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _items = ItemService.GetAll();
+        _logs = InvLogService.GetAll();
+    }
+
+    class DataItem
+    {
+        public int Quantity { get; set; }
+        public string ItemName { get; set; }
+    }
+
+    //private List<InvLog> _logs { get; set; }
+    //private List<Items> _items { get; set; }
+    //private List<int> Quantity { get; set; }
+    //private List<string> ItemName { get; set; }
+
+    //protected override void OnInitialized()
+    //{
+    //    _logs = InvLogService.GetAll();
+    //    _items = ItemService.GetAll();
+
+    //    foreach (var items in _logs)
+    //    {
+    //        Quantity.Add(items.Quantity);
+    //        ItemName.Add(_items.FirstOrDefault(x => x.ItemId == items.ID)?.ItemName);
+    //        /*
+    //        DataItem[] data = new DataItem[]{
+    //            new DataItem{
+    //            Quantity = items.Quantity,
+    //            ItemName = _items.FirstOrDefault(x => x.ItemId == items.ID)?.ItemName
+    //    },
+    //        };
+    //        data1.Add(items.Quantity);
+    //        data1.Add(_items.FirstOrDefault(x => x.ItemId == items.ID)?.ItemName);*/
+    //    }
+    //}
+}

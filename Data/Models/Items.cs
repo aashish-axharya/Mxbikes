@@ -8,13 +8,10 @@ namespace Mxbikes.Data.Models
 {
     public class Items
     {
-        public Guid ID { get; set; } = Guid.NewGuid();
+        public Guid ItemId { get; set; } = Guid.NewGuid();
         public string ItemName { get; set; }
         public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public string TakenBy {get; set; }
-        public Guid ApprovedBy { get; set; }
-        public DateTime DateTaken { get; set; }
+        public DateTime LastTaken { get; set; }
 
     }
 }
