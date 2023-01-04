@@ -63,15 +63,15 @@ namespace Mxbikes.Data
         }
         public static string GetItemFilePath()
         {
-            return Path.Combine(GetAppDirectoryPath(),"items.json");
+            return Path.Combine(GetAppDirectoryPath(), "items.json");
         }
-		public static string GetItemsAddFilePath()
-		{
-			return Path.Combine(GetAppDirectoryPath(), "itemsAdded.json");
-		}
-		public static string GetInvLogFilePath()
-		{
-			return Path.Combine(GetAppDirectoryPath(), "inventoryLog.json");
-		}
-	}
+        public static string GetItemsAddFilePath()
+        {
+            return Path.Combine(GetAppDirectoryPath(), "itemsAdded.json");
+        }
+        public static string GetInvLogFilePath()
+        {
+            return Path.Combine(GetAppDirectoryPath(), "inventoryLog.json");
+        }
+    }
 }

@@ -3,37 +3,37 @@
 
 <!-- Section: Design Block -->
 <section class=" text-center text-lg-start">
-  <div class="card mb-3">
-    <div class="row g-0 d-flex align-items-center">
-      <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
-      <div class="col-lg-4 d-none d-lg-flex">
-        <img src="images/logo.png" alt="logo"
-          class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
-      </div>
-      <div class="col-lg-8">
-        <div class="card-body py-5 px-md-5">
-          <form @onsubmit="LoginHandler">
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example1">Username</label>
-              <input id="form2Example1" class="form-control" @bind="_username" />
+    <div class="card mb-3">
+        <div class="row g-0 d-flex align-items-center">
+            <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
+            <div class="col-lg-4 d-none d-lg-flex">
+                <img src="images/logo.png" alt="logo"
+                     class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
             </div>
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example2">Password</label>
-              <input type="password" id="form2Example2" class="form-control" @bind="_password" />
-            </div>
-            <!-- Submit button -->
+            <div class="col-lg-8">
+                <div class="card-body py-5 px-md-5">
+                    <form @onsubmit="LoginHandler">
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="form2Example1">Username</label>
+                            <input id="form2Example1" class="form-control" @bind="_username" />
+                        </div>
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="form2Example2">Password</label>
+                            <input type="password" id="form2Example2" class="form-control" @bind="_password" />
+                        </div>
+                        <!-- Submit button -->
                         @if (!string.IsNullOrEmpty(_errorMessage))
                         {
                             <AlertMessage Type="danger" Message="@_errorMessage" />
                         }
-            <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
-          </form>
+                        <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </section>
 
 @code {

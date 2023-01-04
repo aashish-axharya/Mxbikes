@@ -6,108 +6,109 @@
 <p>Item Details</p>
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-	<AlertMessage Type="danger" Message="@_errorMessage" />
+    <AlertMessage Type="danger" Message="@_errorMessage" />
 }
 
 <nav class="navbar navbar-light bg-light justify-content-between">
-	<button class="btn btn-primary" type="button" @onclick="AddItemHandler">
-		<span class="oi oi-plus" /> Add Items
-	</button>
+    <button class="btn btn-primary" type="button" @onclick="AddItemHandler">
+        <span class="oi oi-plus" /> Add Items
+    </button>
 </nav>
 <table class="table">
-	<thead>
-		<tr>
-			<th>ID</th>
-			<th>Items</th>
-			<th>Quantity</th>
-			<th>Add?</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var items in _items)
-		{
-			<tr>
-				<td>@items.ItemId</td>
-				<td>@items.ItemName</td>
-				<td>@items.Quantity</td>
-				<td>
-					<input type="number" @bind="_quantity" placeholder="Quantity" />
-					<button class="btn btn-primary" type="button" @onclick="()=>AddQuantity(items.ItemId)">
-						<span class="oi oi-plus" /> Add Quantity
-					</button>
-				</td>
-			</tr>
-		}
-	</tbody>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Items</th>
+            <th>Quantity</th>
+            <th>Add?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var items in _items)
+        {
+            <tr>
+                <td>@items.ItemId</td>
+                <td>@items.ItemName</td>
+                <td>@items.Quantity</td>
+                <td>
+                    <input type="number" @bind="_quantity" placeholder="Quantity" />
+                    <button class="btn btn-primary" type="button" @onclick="()=>AddQuantity(items.ItemId)">
+                        <span class="oi oi-plus" /> Add Quantity
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 @if (_addItem)
 {
-	<ModalDialog Title="Add Item" OkLabel="Add" OnClose="AddItem">
-		<div>
-			<label>Item Name</label>
-			<input type="text" @bind="_itemName" placeholder="Item Name" />
-		</div>
-		<div>
-			<label>Quantity</label>
-			<input type="text" @bind="_quantity" placeholder="Quantity" />
-		</div>
-	</ModalDialog>
+    <ModalDialog Title="Add Item" OkLabel="Add" OnClose="AddItem">
+        <div>
+            <label>Item Name</label>
+            <input type="text" @bind="_itemName" placeholder="Item Name" />
+        </div>
+        <div>
+            <label>Quantity</label>
+            <input type="text" @bind="_quantity" placeholder="Quantity" />
+        </div>
+    </ModalDialog>
 
 }
 
 @code {
-	[CascadingParameter]
-	private GlobalState _globalState { get; set; }
-	private List<Items> _items;
-	private List<InvAdd> _addInv;
-	private bool _addItem { get; set; }
-	private string _itemName { get; set; }
-	private int _quantity { get; set; }
-	private string _errorMessage = "";
+    [CascadingParameter]
+    private GlobalState _globalState { get; set; }
+    private List<Items> _items;
+    private List<InvAdd> _addInv;
+    private bool _addItem { get; set; }
+    private string _itemName { get; set; }
+    private int _quantity { get; set; }
+    private string _errorMessage = "";
 
-	protected override void OnInitialized()
-	{
-		_items = ItemService.GetAll();
-	}
+    protected override void OnInitialized()
+    {
+        _items = ItemService.GetAll();
+    }
 
-	private void AddItem(bool value)
-	{
-		if (value)
-		{
-			_addItem = false;
-		}
-		else
-		{
-			try
-			{
-				_items = ItemService.Create(_itemName, _quantity);
-				_itemName = "";
-				_quantity = 0;
-				_addItem = false;
-			} catch(Exception e)
-			{
-				_errorMessage = e.Message;
-				Console.WriteLine(e);
-			}
-		}
-	}
-	private void AddItemHandler()
-	{
-		_addItem = true;
-	}
-	private void AddQuantity(Guid userId)
-	{
-		if (_quantity == 0)
-		{
-			_errorMessage = "Value cannot be 0";
-		}
-		else
-		{
-			_items = ItemService.AddQuantity(userId, _quantity);
-			_addInv = InvAddService.Create(userId, _globalState.CurrentUser.Id, _quantity);
-			_quantity = 0;
-		}
-	}
+    private void AddItem(bool value)
+    {
+        if (value)
+        {
+            _addItem = false;
+        }
+        else
+        {
+            try
+            {
+                _items = ItemService.Create(_itemName, _quantity);
+                _itemName = "";
+                _quantity = 0;
+                _addItem = false;
+            }
+            catch (Exception e)
+            {
+                _errorMessage = e.Message;
+                Console.WriteLine(e);
+            }
+        }
+    }
+    private void AddItemHandler()
+    {
+        _addItem = true;
+    }
+    private void AddQuantity(Guid userId)
+    {
+        if (_quantity == 0)
+        {
+            _errorMessage = "Value cannot be 0";
+        }
+        else
+        {
+            _items = ItemService.AddQuantity(userId, _quantity);
+            _addInv = InvAddService.Create(userId, _globalState.CurrentUser.Id, _quantity);
+            _quantity = 0;
+        }
+    }
 }
 @code {
 

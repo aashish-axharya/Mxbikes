@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <button disabled="@(_globalState.CurrentUser != null ? _globalState.CurrentUser.Id == user.Id : false)"
-                    class="btn btn-outline-danger" type="button" @onclick="()=>OpenDeleteUserDialog(user)">
+                        class="btn btn-outline-danger" type="button" @onclick="()=>OpenDeleteUserDialog(user)">
                         <span class="oi oi-delete" /> Delete
                     </button>
                 </td>
@@ -43,26 +43,26 @@
 @if (_showAddUserDialog)
 {
     <ModalDialog Title="Add User" OnClose="@OnAddUserDialogClose" OkLabel="Add">
-    <form>
-        <div class="form-floating">
-            <input type="text" class="form-control username" @bind="_username" placeholder="Username" />
-            <label for="floatingInput">Username</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="password" class="form-control password" @bind="_password" placeholder="Password" />
-            <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-check">
-            <input id="userRole" type="radio" class="form-check-input" name="role" value="@Role.Staff"
-                @onchange="RoleChangeHandler" checked="@(_role == Role.Staff)">
-            <label class="form-check-label" for="userRole">@Role.Staff</label>
-        </div>
-        <div class="form-check">
-            <input id="adminRole" type="radio" class="form-check-input" name="role" value="@Role.Admin"
-                @onchange="RoleChangeHandler" checked="@(_role == Role.Admin)">
-            <label class="form-check-label" for="adminRole">@Role.Admin</label>
-        </div>
-        @if (!string.IsNullOrEmpty(_addUserErrorMessage))
+        <form>
+            <div class="form-floating">
+                <input type="text" class="form-control username" @bind="_username" placeholder="Username" />
+                <label for="floatingInput">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control password" @bind="_password" placeholder="Password" />
+                <label for="floatingPassword">Password</label>
+            </div>
+            <div class="form-check">
+                <input id="userRole" type="radio" class="form-check-input" name="role" value="@Role.Staff"
+                   @onchange="RoleChangeHandler" checked="@(_role == Role.Staff)">
+                <label class="form-check-label" for="userRole">@Role.Staff</label>
+            </div>
+            <div class="form-check">
+                <input id="adminRole" type="radio" class="form-check-input" name="role" value="@Role.Admin"
+                   @onchange="RoleChangeHandler" checked="@(_role == Role.Admin)">
+                <label class="form-check-label" for="adminRole">@Role.Admin</label>
+            </div>
+            @if (!string.IsNullOrEmpty(_addUserErrorMessage))
             {
                 <AlertMessage Type="danger" Message="@_addUserErrorMessage" />
             }
@@ -73,8 +73,8 @@
 @if (_showDeleteUserDialog)
 {
     <ModalDialog Title="Delete User" OnClose="@OnDeleteUserDialogClose" OkLabel="Confirm">
-    <p>Are you sure you want to delete <strong>@_deleteUser.Username</strong> user and their data?</p>
-    @if (!string.IsNullOrEmpty(_deleteUserErrorMessage))
+        <p>Are you sure you want to delete <strong>@_deleteUser.Username</strong> user and their data?</p>
+        @if (!string.IsNullOrEmpty(_deleteUserErrorMessage))
         {
             <AlertMessage Type="danger" Message="@_deleteUserErrorMessage" />
         }
